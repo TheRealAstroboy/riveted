@@ -1,8 +1,9 @@
 /*!
  * @preserve
- * riveted.js | v0.6.2
+ * riveted.js | v0.6.3
  * Copyright (c) 2016 Rob Flaherty (@robflaherty)
  * 29/10/2020  - gtag Fix by TheRealAstroboy
+ * 30/10/2020  - OnePage Support by TheRealAstroboy
  * Licensed under the MIT license
  */
 
@@ -21,7 +22,15 @@
   }
 }(this, function () {
 
-/* Riveted */
+  /* Event values */
+  var eventValues = {
+    eventCategory: 'Riveted', // default value : 'Riveted'
+    eventActionTimeSpent: 'Time Spent', // default value : 'Time Spent'
+    timing: 'RivetedTiming', // default value : 'RivetedTiming'
+    timingCategory: 'Riveted', // default value : 'Riveted'
+    timingVar: 'First Interaction' // default value : 'First Interaction'
+  }
+  /* Riveted */
 
 var riveted = (function() {
 
@@ -41,16 +50,16 @@ var riveted = (function() {
     classicGA,
     universalSendCommand,
     googleTagManager,
-    gaGlobal;
+    gaGlobal,
+    domcontext;
 
     function init(options) {
-
       // Set up options and defaults
       options = options || {};
       reportInterval = parseInt(options.reportInterval, 10) || 5;
       idleTimeout = parseInt(options.idleTimeout, 10) || 30;
       gaGlobal = options.gaGlobal || 'ga';
-
+      domcontext = options.domcontext || 'document'
       /*
        * Determine which version of GA is being used
        * "ga", "_gaq", and "dataLayer" are the possible globals
@@ -160,20 +169,20 @@ var riveted = (function() {
     sendUserTiming = function (timingValue) {
 
       if (googleTagManager) {
-        gtag('event', 'RivetedTiming', {
-          'event_category': 'Riveted',
-          'event_label': 'First Interaction',
+        gtag('event', eventValues.timing, {
+          'event_category': eventValues.timingCategory,
+          'event_label': domcontext + '-' + eventValues.timingVar,
           'value': timingValue
         });
 
       } else {
 
         if (universalGA) {
-          window[gaGlobal](universalSendCommand, 'timing', 'Riveted', 'First Interaction', timingValue);
+          window[gaGlobal](universalSendCommand, 'timing', eventValues.timingCategory, domcontext + '-' + eventValues.timingVar, timingValue);
         }
 
         if (classicGA) {
-          _gaq.push(['_trackTiming', 'Riveted', 'First Interaction', timingValue, null, 100]);
+          _gaq.push(['_trackTiming', eventValues.timingCategory, domcontext + '-' + eventValues.timingVar, timingValue, null, 100]);
         }
 
       }
@@ -185,12 +194,11 @@ var riveted = (function() {
      */
 
     sendEvent = function (time) {
-
       if (googleTagManager) {
 
-        gtag('event', 'Time Spent', {
-          'event_category': 'Riveted',
-          'event_label': time,
+        gtag('event', eventValues.eventActionTimeSpent, {
+          'event_category': eventValues.eventCategory,
+          'event_label': domcontext, 
           'value': reportInterval,
           'non_interaction': nonInteraction
         });
@@ -198,11 +206,11 @@ var riveted = (function() {
       } else {
 
         if (universalGA) {
-          window[gaGlobal](universalSendCommand, 'event', 'Riveted', 'Time Spent', time.toString(), reportInterval, {'nonInteraction': nonInteraction});
+          window[gaGlobal](universalSendCommand, 'event', eventValues.eventCategory, eventValues.eventActionTimeSpent, domcontext, reportInterval, { 'nonInteraction': nonInteraction });
         }
 
         if (classicGA) {
-          _gaq.push(['_trackEvent', 'Riveted', 'Time Spent', time.toString(), reportInterval, nonInteraction]);
+          _gaq.push(['_trackEvent', eventValues.eventCategory, eventValues.eventActionTimeSpent, domcontext, reportInterval, nonInteraction]);
         }
 
       }
