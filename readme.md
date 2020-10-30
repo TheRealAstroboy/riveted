@@ -1,3 +1,5 @@
+Use https://cdn.jsdelivr.net/gh/TheRealAstroboy/riveted/riveted.min.js !
+
 # Riveted
 Riveted is a Google Analytics plugin that tracks how much time users spend actively engaged on a page.
 
@@ -37,6 +39,8 @@ Tested in latest versions of Chrome, Firefox, Safari, and Opera. Internet Explor
 If you have any questions you can find me on Twitter at [@robflaherty](https://twitter.com/robflaherty).
 
 ## Changelog
+0.6.3 (30/10/20): Add OnePage site support.
+
 0.6.2 (29/10/20): fix gtag support.
 
 0.6.1 (4/28/16): Added Universal Module Definition (UMD) support.
